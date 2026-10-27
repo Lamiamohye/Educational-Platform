@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة التعلم الذكي المتكاملة - LMS Interactive Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased bg-slate-50 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+
+    <!-- Top Global Switcher Header Bar -->
+    <header class="bg-slate-900 text-white px-4 py-3 shadow-lg border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white p-2.5 rounded-2xl font-bold flex items-center justify-center w-11 h-11 shadow-md shadow-blue-500/30">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-lg leading-tight tracking-wide flex items-center gap-2">
+                        منصة التعلم الأكاديمي
+                        <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-800 px-2 py-0.5 rounded-full">تطبيقي مباشر</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">لوحة التحكم التفاعلية للمرحلة الإعدادية والثانوية</p>
+                </div>
+            </div>
+
+            <!-- Role Switcher Control Tabs -->
+            <div class="flex items-center bg-slate-800/90 p-1.5 rounded-2xl border border-slate-700/80 overflow-x-auto max-w-full">
+                <button onclick="switchRole('student')" id="btn-student" class="role-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-blue-600 text-white shadow-sm">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span>لوحة الطالب</span>
+                </button>
+                <button onclick="switchRole('teacher')" id="btn-teacher" class="role-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-700/50">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>لوحة المعلم</span>
+                </button>
+                <button onclick="switchRole('admin')" id="btn-admin" class="role-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-700/50">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>لوحة الأدمن</span>
+                </button>
+                <button onclick="switchRole('superadmin')" id="btn-superadmin" class="role-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-700/50">
+                    <i class="fa-solid fa-shield-halved text-amber-400"></i>
+                    <span>السوبر أدمن</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto p-4 md:p-6 gap-6">
+
+        <!-- Sidebar Section -->
+        <aside class="w-full md:w-72 bg-white rounded-3xl border border-slate-200/80 p-4 shadow-sm flex flex-col justify-between shrink-0">
+            <div>
+                <!-- Current Profile Badge -->
+                <div id="sidebar-user-card" class="flex items-center gap-3 p-3.5 bg-slate-50 rounded-2xl border border-slate-100 mb-6">
+                    <img id="user-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed" alt="Avatar" class="w-12 h-12 rounded-2xl border-2 border-blue-500 bg-blue-50">
+                    <div class="overflow-hidden">
+                        <h2 id="user-name" class="font-extrabold text-slate-800 text-sm truncate">أحمد محمود</h2>
+                        <span id="user-role-badge" class="inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 mt-1">الصف الثالث الإعدادي</span>
+                    </div>
+                </div>
+
+                <!-- Contextual Sidebar Navigation Links -->
+                <nav class="space-y-1.5" id="sidebar-menu">
+                    <!-- Dynamic rendering by JS -->
+                </nav>
+            </div>
+
+            <!-- Footer Stats / Live Notification Summary -->
+            <div class="pt-4 border-t border-slate-100 mt-6 space-y-3">
+                <div class="flex items-center justify-between text-xs text-slate-500">
+                    <span>حالة النظام</span>
+                    <span class="flex items-center gap-1.5 text-emerald-600 font-bold">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> خادم نشط
+                    </span>
+                </div>
+                <div class="bg-blue-50 p-3 rounded-2xl border border-blue-100 text-xs text-blue-900 flex items-center justify-between font-bold">
+                    <span><i class="fa-solid fa-bell text-blue-600 ml-1.5"></i> الإشعارات المعلقة</span>
+                    <span id="global-unread-badge" class="bg-blue-600 text-white font-extrabold px-2.5 py-0.5 rounded-full text-[10px]">3</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace View -->
+        <main class="flex-1 space-y-6 min-w-0">
+            
+            <!-- Top Dashboard Bar & Notifications Toggle -->
+            <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between gap-4">
+                <div>
+                    <h2 id="view-title" class="text-xl font-extrabold text-slate-800">لوحة تحكم الطالب</h2>
+                    <p id="view-subtitle" class="text-xs text-slate-500 mt-0.5">مرحباً بك، تصفح مقرراتك الدراسية وواجباتك المتبقية</p>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Interactive Notification Bell -->
+                    <div class="relative">
+                        <button onclick="toggleNotifications()" class="relative p-3 rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all focus:outline-none">
+                            <i class="fa-regular fa-bell text-lg"></i>
+                            <span id="notif-badge-dot" class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white"></span>
+                        </button>
+
+                        <!-- Notification Modal Dropdown -->
+                        <div id="notif-dropdown" class="hidden absolute left-0 md:left-auto md:right-0 mt-3 w-80 md:w-96 bg-white rounded-3xl shadow-2xl border border-slate-200 z-50 overflow-hidden animate-fade-in">
+                            <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-bell text-blue-600"></i>
+                                    <h3 class="font-bold text-sm text-slate-800">مركز الإشعارات التفاعلي</h3>
+                                </div>
+                                <button onclick="markAllNotificationsRead()" class="text-xs font-bold text-blue-600 hover:underline">تحديد الكل ككمقروء</button>
+                            </div>
+                            <div id="notifications-list" class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                                <!-- Dynamic notifications content -->
+                            </div>
+                            <div class="p-2 text-center bg-slate-50 border-t border-slate-100 text-[11px] text-slate-400">
+                                يتم تحديث الإشعارات تلقائياً حسب الدور النشط
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date Badge -->
+                    <div class="hidden sm:flex items-center gap-2 px-3.5 py-2 bg-slate-100 rounded-2xl text-xs font-bold text-slate-700">
+                        <i class="fa-regular fa-calendar text-blue-600"></i>
+                        <span id="current-date-display">اليوم</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Section Injector -->
+            <div id="dashboard-content" class="animate-fade-in space-y-6">
+                <!-- Content injected via JavaScript -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Unified Dialog Container (Modals) -->
+    <div id="modal-overlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-2xl overflow-hidden animate-fade-in">
+            <div id="modal-header" class="p-4 bg-slate-900 text-white flex items-center justify-between">
+                <h3 id="modal-title" class="font-extrabold text-sm flex items-center gap-2">نافذة الإجراءات</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-800 transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="modal-body" class="p-6 max-h-[80vh] overflow-y-auto space-y-4">
+                <!-- Dynamic Content -->
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
+                <button onclick="closeModal()" class="px-5 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-300 transition-all">إغلاق النافذة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script Logic -->
+    <script>
+        // System State
+        let currentRole = 'student';
+        let activeTab = 'overview';
+        let selectedCourseId = null;
+        let selectedGroupId = null;
+
+        // Mock Database
+        const systemData = {
+            courses: [
+                { id: 1, title: 'الرياضيات - الصف الثالث الإعدادي', teacher: 'أ. محمد العلي', studentsCount: 145, progress: 75, icon: 'fa-calculator', color: 'bg-blue-500', available: true },
+                { id: 2, title: 'الفيزياء - الأول الثانوي', teacher: 'د. سارة أحمد', studentsCount: 98, progress: 40, icon: 'fa-atom', color: 'bg-purple-500', available: true },
+                { id: 3, title: 'اللغة الإنجليزية - الثاني الثانوي', teacher: 'أ. رامي يوسف', studentsCount: 210, progress: 90, icon: 'fa-language', color: 'bg-emerald-500', available: true },
+                { id: 4, title: 'الكيمياء - الثالث الثانوي', teacher: 'د. سارة أحمد', studentsCount: 175, progress: 20, icon: 'fa-vial', color: 'bg-amber-500', available: false }
+            ],
+            courseDetails: {
+                videos: [
+                    { id: 101, title: 'المحاضرة الأولى: مراجعة المعادلات التربيعية', duration: '45 دقيقة', views: 120, date: '2026-10-20' },
+                    { id: 102, title: 'المحاضرة الثانية: التحليل الهندسي والمجسمات', duration: '50 دقيقة', views: 95, date: '2026-10-24' }
+                ],
+                pdfs: [
+                    { id: 201, title: 'ملخص الفصل الأول - PDF', size: '4.2 MB', downloads: 130 },
+                    { id: 202, title: 'كراسة التمارين المحلولة', size: '2.8 MB', downloads: 88 }
+                ],
+                assignments: [
+                    { id: 301, title: 'واجب تطبيق المعادلات', deadline: '2026-10-30', status: 'completed', score: '18 / 20', totalStudents: 145, submittedCount: 112 },
+                    { id: 302, title: 'اختبار قصير - الهندسة الفضائية', deadline: '2026-11-02', status: 'pending', score: 'غير حلول', totalStudents: 145, submittedCount: 45 }
+                ]
+            },
+            groups: [
+                {
+                    id: 'g1',
+                    name: 'مجموعة أ - الصف الثالث الإعدادي (الأحد والأربعاء)',
+                    time: '04:00 مساءً',
+                    students: [
+                        { id: 1, name: 'أحمد محمود', watchedVideo: true, submittedAssignment: true, grade: '18 / 20', lastActive: 'منذ 10 دقائق' },
+                        { id: 2, name: 'مريم هاني', watchedVideo: true, submittedAssignment: true, grade: '20 / 20', lastActive: 'منذ ساعة' },
+                        { id: 3, name: 'علي حسن', watchedVideo: false, submittedAssignment: false, grade: 'غير رصد', lastActive: 'منذ يومين' },
+                        { id: 4, name: 'جنى طارق', watchedVideo: true, submittedAssignment: false, grade: 'غير رصد', lastActive: 'منذ 3 ساعات' }
+                    ]
+                },
+                {
+                    id: 'g2',
+                    name: 'مجموعة ب - الصف الأول الثانوي (الإثنين والخميس)',
+                    time: '06:00 مساءً',
+                    students: [
+                        { id: 5, name: 'عمر خالد', watchedVideo: true, submittedAssignment: true, grade: '16 / 20', lastActive: 'منذ 20 دقيقة' },
+                        { id: 6, name: 'سارة عبد الله', watchedVideo: false, submittedAssignment: false, grade: 'غير رصد', lastActive: 'منذ 3 أيام' }
+                    ]
+                }
+            ],
+            students: [
+                { id: 1, name: 'أحمد محمود', email: 'ahmed@example.com', grade: 'الصف الثالث الإعدادي', enrolledCourses: ['الرياضيات'], status: 'نشط (Available)' },
+                { id: 2, name: 'مريم هاني', email: 'maryam@example.com', grade: 'الأول الثانوي', enrolledCourses: ['الفيزياء'], status: 'نشط (Available)' },
+                { id: 3, name: 'عمر خالد', email: 'omar@example.com', grade: 'الثاني الثانوي', enrolledCourses: ['اللغة الإنجليزية'], status: 'معلق (Pending)' },
+                { id: 4, name: 'سارة طارق', email: 'sara@example.com', grade: 'الثالث الثانوي', enrolledCourses: ['الكيمياء'], status: 'نشط (Available)' }
+            ],
+            teachers: [
+                { id: 10, name: 'أ. محمد العلي', subject: 'الرياضيات', totalStudents: 320, groupsCount: 4, coursesCount: 2 },
+                { id: 11, name: 'د. سارة أحمد', subject: 'الفيزياء والكيمياء', totalStudents: 273, groupsCount: 3, coursesCount: 2 },
+                { id: 12, name: 'أ. رامي يوسف', subject: 'اللغة الإنجليزية', totalStudents: 210, groupsCount: 2, coursesCount: 1 }
+            ],
+            notifications: {
+                student: [
+                    { id: 1, title: 'محاضرة جديدة مضافة', desc: 'قام أ. محمد العلي بإضافة المحاضرة الثانية في الرياضيات.', time: 'منذ 10 دقائق', type: 'video', unread: true },
+                    { id: 2, title: 'تنبيه موعد تسليم', desc: 'اقترب موعد تسليم واجب المعادلات (الموعد النهائي: 30 أكتوبر).', time: 'منذ ساعتين', type: 'warning', unread: true },
+                    { id: 3, title: 'تم رصد الدرجة', desc: 'تم تصحيح اختبار الهندسة، حصلت على 18/20.', time: 'منذ يوم', type: 'score', unread: false }
+                ],
+                teacher: [
+                    { id: 1, title: 'تسليم واجب جديد', desc: 'قام الطالب "أحمد محمود" بتسليم واجب تطبيق المعادلات.', time: 'منذ 5 دقائق', type: 'submission', unread: true },
+                    { id: 2, title: 'تسليم واجب جديد', desc: 'قامت الطالبة "مريم هاني" بتسليم واجب تطبيق المعادلات.', time: 'منذ 25 دقيقة', type: 'submission', unread: true }
+                ],
+                admin: [
+                    { id: 1, title: 'طلب انضمام طالب جديد', desc: 'تم تسجيل الطالب "عمر خالد" وبانتظار تفعيل مادة الفيزياء.', time: 'منذ 15 دقيقة', type: 'access', unread: true },
+                    { id: 2, title: 'تعديل المحتوى', desc: 'قام د. سارة بإضافة ملف جديد لمادة الفيزياء.', time: 'منذ ساعة', type: 'info', unread: false }
+                ],
+                superadmin: [
+                    { id: 1, title: 'تقرير المنصة الإجمالي', desc: 'تم تسليم 85 واجب اليوم وانضمام 12 طالب جديد.', time: 'منذ ساعة', type: 'system', unread: true },
+                    { id: 2, title: 'تفعيل صلاحيات الأدمن', desc: 'قام الأدمن علي الكردي بمنح وصول جديد لـ 5 طلاب.', time: 'منذ 3 ساعات', type: 'access', unread: false }
+                ]
+            }
+        };
+
+        // Window Load Handler
+        window.onload = function() {
+            document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+            renderApp();
+        };
+
+        // Role Switcher
+        function switchRole(role) {
+            currentRole = role;
+            activeTab = 'overview';
+            selectedCourseId = null;
+            selectedGroupId = null;
+
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.className = 'role-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-700/50';
+            });
+            const activeBtn = document.getElementById(`btn-${role}`);
+            activeBtn.className = 'role-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-blue-600 text-white shadow-sm';
+
+            renderApp();
+        }
+
+        function renderApp() {
+            renderSidebar();
+            renderNotificationsList();
+            renderMainView();
+        }
+
+        // Sidebar Navigation Engine
+        function renderSidebar() {
+            const avatar = document.getElementById('user-avatar');
+            const name = document.getElementById('user-name');
+            const roleBadge = document.getElementById('user-role-badge');
+            const menu = document.getElementById('sidebar-menu');
+
+            let menuHtml = '';
+
+            if (currentRole === 'student') {
+                avatar.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmed';
+                name.innerText = 'أحمد محمود';
+                roleBadge.innerText = 'طالب - 3 إعدادي';
+                roleBadge.className = 'inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 mt-1';
+
+                menuHtml = `
+                    <button onclick="changeTab('overview')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='overview'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-book-open w-5 text-center"></i> موادي الدراسية
+                    </button>
+                    <button onclick="changeTab('deadlines')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='deadlines'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-clock w-5 text-center"></i> مواعيد التسليم والـ Deadlines
+                    </button>
+                `;
+            } else if (currentRole === 'teacher') {
+                avatar.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mohamed';
+                name.innerText = 'أ. محمد العلي';
+                roleBadge.innerText = 'معلم - رياضيات';
+                roleBadge.className = 'inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-700 mt-1';
+
+                menuHtml = `
+                    <button onclick="changeTab('overview')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='overview'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-layer-group w-5 text-center"></i> إدارة المحتوى والدروس
+                    </button>
+                    <button onclick="changeTab('groups')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='groups'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-users-rectangle w-5 text-center"></i> مجموعات الطلاب وتفاصيلهم
+                    </button>
+                `;
+            } else if (currentRole === 'admin') {
+                avatar.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=AdminUser';
+                name.innerText = 'مهندس علي الكردي';
+                roleBadge.innerText = 'أدمن النظام';
+                roleBadge.className = 'inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 mt-1';
+
+                menuHtml = `
+                    <button onclick="changeTab('overview')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='overview'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-user-check w-5 text-center"></i> إدارة الطلاب والـ Access
+                    </button>
+                    <button onclick="changeTab('teachers_manage')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='teachers_manage'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-chalkboard-user w-5 text-center"></i> قائمة المعلمين والمواد
+                    </button>
+                `;
+            } else if (currentRole === 'superadmin') {
+                avatar.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=SuperUser';
+                name.innerText = 'د. الأستاذ / المالك';
+                roleBadge.innerText = 'سوبر أدمن (Super Admin)';
+                roleBadge.className = 'inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 mt-1';
+
+                menuHtml = `
+                    <button onclick="changeTab('overview')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='overview'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i> نظرة عامة وإحصائيات
+                    </button>
+                    <button onclick="changeTab('admin_permissions')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='admin_permissions'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-user-gear w-5 text-center"></i> إدارة الطلاب (صلاحيات الأدمن)
+                    </button>
+                    <button onclick="changeTab('admin_tasks')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeTab==='admin_tasks'?'bg-blue-600 text-white shadow-sm':'text-slate-600 hover:bg-slate-100'}">
+                        <i class="fa-solid fa-user-shield w-5 text-center"></i> فريق الأدمنز والمهام
+                    </button>
+                `;
+            }
+
+            menu.innerHTML = menuHtml;
+        }
+
+        function changeTab(tab) {
+            activeTab = tab;
+            selectedCourseId = null;
+            selectedGroupId = null;
+            renderApp();
+        }
+
+        // Notification Render Engine
+        function renderNotificationsList() {
+            const list = document.getElementById('notifications-list');
+            const notifs = systemData.notifications[currentRole] || [];
+            
+            const unreadCount = notifs.filter(n => n.unread).length;
+            document.getElementById('global-unread-badge').innerText = unreadCount;
+            document.getElementById('notif-badge-dot').style.display = unreadCount > 0 ? 'block' : 'none';
+
+            if (notifs.length === 0) {
+                list.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">لا توجد إشعارات حالية</div>`;
+                return;
+            }
+
+            list.innerHTML = notifs.map(n => `
+                <div class="p-3.5 hover:bg-slate-50 transition-all flex gap-3 items-start ${n.unread ? 'bg-blue-50/50' : ''}">
+                    <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-xs mt-0.5 font-bold">
+                        <i class="fa-solid ${getNotifIcon(n.type)}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-slate-800">${n.title}</h4>
+                            <span class="text-[10px] text-slate-400">${n.time}</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">${n.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getNotifIcon(type) {
+            switch(type) {
+                case 'video': return 'fa-circle-play';
+                case 'warning': return 'fa-clock';
+                case 'score': return 'fa-award';
+                case 'submission': return 'fa-file-arrow-up';
+                case 'access': return 'fa-key';
+                default: return 'fa-bell';
+            }
+        }
+
+        function toggleNotifications() {
+            document.getElementById('notif-dropdown').classList.toggle('hidden');
+        }
+
+        function markAllNotificationsRead() {
+            (systemData.notifications[currentRole] || []).forEach(n => n.unread = false);
+            renderNotificationsList();
+        }
+
+        // Dashboard Router
+        function renderMainView() {
+            const container = document.getElementById('dashboard-content');
+            const title = document.getElementById('view-title');
+            const subtitle = document.getElementById('view-subtitle');
+
+            if (currentRole === 'student') {
+                if (selectedCourseId) {
+                    renderCourseDetailsView(container, title, subtitle);
+                } else if (activeTab === 'deadlines') {
+                    renderStudentDeadlines(container, title, subtitle);
+                } else {
+                    renderStudentCourses(container, title, subtitle);
+                }
+            } else if (currentRole === 'teacher') {
+                if (activeTab === 'groups') {
+                    if (selectedGroupId) {
+                        renderGroupDetailsView(container, title, subtitle);
+                    } else {
+                        renderTeacherGroupsList(container, title, subtitle);
+                    }
+                } else {
+                    renderTeacherOverview(container, title, subtitle);
+                }
+            } else if (currentRole === 'admin') {
+                if (activeTab === 'teachers_manage') {
+                    renderAdminTeachersView(container, title, subtitle);
+                } else {
+                    renderAdminSubscriptions(container, title, subtitle);
+                }
+            } else if (currentRole === 'superadmin') {
+                if (activeTab === 'admin_permissions') {
+                    renderAdminSubscriptions(container, title, subtitle, true);
+                } else if (activeTab === 'admin_tasks') {
+                    renderSuperAdminAdminsView(container, title, subtitle);
+                } else {
+                    renderSuperAdminOverview(container, title, subtitle);
+                }
+            }
+        }
+
+        // ==========================================
+        // 1. STUDENT DASHBOARD
+        // ==========================================
+        function renderStudentCourses(container, title, subtitle) {
+            title.innerText = 'موادي الدراسية المسجل بها';
+            subtitle.innerText = 'تصفح المقررات الدراسية واطلع على الدروس المرفقة والتقدم الدراسي';
+
+            const userCourses = systemData.courses.filter(c => c.available);
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${userCourses.map(course => `
+                        <div onclick="openCourseDetails(${course.id})" class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="${course.color} text-white w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-md">
+                                        <i class="fa-solid ${course.icon}"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-extrabold text-slate-800 group-hover:text-blue-600 transition-colors">${course.title}</h3>
+                                        <p class="text-xs text-slate-500">${course.teacher}</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs bg-slate-100 text-slate-600 font-bold px-3 py-1.5 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-all">فتح المحتوى <i class="fa-solid fa-chevron-left mr-1"></i></span>
+                            </div>
+
+                            <div class="space-y-1.5 mt-4">
+                                <div class="flex justify-between text-xs font-bold text-slate-600">
+                                    <span>نسبة الإنجاز في المادة</span>
+                                    <span class="text-blue-600">${course.progress}%</span>
+                                </div>
+                                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-600 rounded-full" style="width: ${course.progress}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function openCourseDetails(courseId) {
+            selectedCourseId = courseId;
+            renderMainView();
+        }
+
+        function renderCourseDetailsView(container, title, subtitle) {
+            const course = systemData.courses.find(c => c.id === selectedCourseId);
+            title.innerText = course ? course.title : 'محتوى المادة';
+            subtitle.innerText = `المعلم: ${course ? course.teacher : ''}`;
+
+            const details = systemData.courseDetails;
+
+            container.innerHTML = `
+                <div class="mb-4">
+                    <button onclick="selectedCourseId=null; renderMainView();" class="text-xs text-blue-600 font-extrabold hover:underline flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-right"></i> العودة لقائمة المواد الدراسية
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Videos Section -->
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+                            <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-play text-blue-600 text-base"></i> المحاضرات وفيديوهات الشرح
+                            </h3>
+                            <div class="space-y-3">
+                                ${details.videos.map(v => `
+                                    <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between hover:bg-blue-50/50 transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                                                <i class="fa-solid fa-play"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-extrabold text-xs text-slate-800">${v.title}</h4>
+                                                <span class="text-[11px] text-slate-500 font-semibold"><i class="fa-regular fa-clock ml-1"></i>${v.duration}</span>
+                                            </div>
+                                        </div>
+                                        <button onclick="showVideoModal('${v.title}')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">مشاهدة</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- PDF Files -->
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+                            <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf text-red-500 text-base"></i> المذكرات والملفات (PDF)
+                            </h3>
+                            <div class="space-y-3">
+                                ${details.pdfs.map(p => `
+                                    <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                                                <i class="fa-solid fa-file-lines"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-extrabold text-xs text-slate-800">${p.title}</h4>
+                                                <span class="text-[11px] text-slate-500 font-semibold">${p.size}</span>
+                                            </div>
+                                        </div>
+                                        <button onclick="alert('جاري تحميل الملف...')" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-all">تحميل الملف</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assignments & Quizzes -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+                            <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-pen-ruler text-purple-600 text-base"></i> الواجبات والاختبارات
+                            </h3>
+                            <div class="space-y-3">
+                                ${details.assignments.map(a => `
+                                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                                        <div class="flex items-start justify-between gap-2">
+                                            <h4 class="font-extrabold text-xs text-slate-800">${a.title}</h4>
+                                            <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${a.status==='completed'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">
+                                                ${a.status==='completed'?'مكتمل':'معلق'}
+                                            </span>
+                                        </div>
+                                        <div class="text-[11px] text-slate-500 font-semibold">
+                                            <i class="fa-regular fa-calendar ml-1"></i> الموعد النهائي: ${a.deadline}
+                                        </div>
+                                        <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs">
+                                            <span class="font-bold text-slate-700">الدرجة: <strong class="text-blue-600">${a.score}</strong></span>
+                                            ${a.status !== 'completed' ? `<button onclick="openAssignmentModal('${a.title}')" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[11px] font-bold shadow-sm">رفع الحل</button>` : ''}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStudentDeadlines(container, title, subtitle) {
+            title.innerText = 'جدول مواعيد التسليم (Deadlines)';
+            subtitle.innerText = 'تنبيهات بالمواعيد النهائية لتسليم التكليفات والاختبارات';
+
+            container.innerHTML = `
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="p-4 border-r-4 border-amber-500 bg-amber-50/50 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <h4 class="font-extrabold text-sm text-slate-800">واجب تطبيق المعادلات (الرياضيات)</h4>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">الموعد النهائي للتسليم: 30 أكتوبر 2026</p>
+                        </div>
+                        <span class="px-3 py-1 bg-amber-100 text-amber-800 font-extrabold text-xs rounded-full">متبقي 3 أيام</span>
+                    </div>
+
+                    <div class="p-4 border-r-4 border-blue-500 bg-blue-50/50 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <h4 class="font-extrabold text-sm text-slate-800">اختبار قصير - الهندسة الفضائية</h4>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">الموعد النهائي للتسليم: 02 نوفمبر 2026</p>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 font-extrabold text-xs rounded-full">متبقي 6 أيام</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 2. TEACHER DASHBOARD & GROUP DEEP DIVE
+        // ==========================================
+        function renderTeacherOverview(container, title, subtitle) {
+            title.innerText = 'إدارة المحتوى والمواد (لوحة المعلم)';
+            subtitle.innerText = 'رفع الدروس والفيديوهات والملفات للطلاب';
+
+            container.innerHTML = `
+                <div class="flex justify-end mb-4">
+                    <button onclick="openUploadContentModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl text-xs flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i> رفع محاضرة أو واجب جديد
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${systemData.courses.filter(c => c.teacher.includes('محمد')).map(course => `
+                        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-sm space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="${course.color} text-white w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-md">
+                                        <i class="fa-solid ${course.icon}"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-extrabold text-slate-800">${course.title}</h3>
+                                        <p class="text-xs text-slate-500 font-semibold">${course.studentsCount} طالب مسجل في المادة</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                                <span class="text-slate-500 font-semibold">2 فيديوهات • 2 ملفات PDF</span>
+                                <button onclick="openUploadContentModal('${course.title}')" class="text-blue-600 font-extrabold hover:underline">إضافة درس للمادة</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderTeacherGroupsList(container, title, subtitle) {
+            title.innerText = 'المجموعات والصفوف الدراسية';
+            subtitle.innerText = 'انقري على أي مجموعة لعرض كافة الطلاب المشتركين فيها وحالة المشاهدات والحل والدرجات';
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${systemData.groups.map(group => `
+                        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-sm space-y-4 hover:border-blue-300 transition-all">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 font-black flex items-center justify-center text-lg">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-extrabold text-slate-800 text-sm">${group.name}</h3>
+                                        <p class="text-xs text-slate-500 font-semibold mt-0.5"><i class="fa-regular fa-clock ml-1"></i> الموعد: ${group.time}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-600">${group.students.length} طلاب مشتركين</span>
+                                <button onclick="openGroupDetails('${group.id}')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
+                                    <span>عرض تفاصيل المجموعة والطلاب</span>
+                                    <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function openGroupDetails(groupId) {
+            selectedGroupId = groupId;
+            renderMainView();
+        }
+
+        function renderGroupDetailsView(container, title, subtitle) {
+            const group = systemData.groups.find(g => g.id === selectedGroupId);
+            title.innerText = `تفاصيل الطلاب - ${group ? group.name : 'المجموعة'}`;
+            subtitle.innerText = 'متابعة حالة مشاهدة الفيديو وحل الواجب ورصد الدرجات لكل طالب بالمجموعة';
+
+            container.innerHTML = `
+                <div class="mb-4">
+                    <button onclick="selectedGroupId=null; renderMainView();" class="text-xs text-blue-600 font-extrabold hover:underline flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-right"></i> العودة لقائمة المجموعات
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="font-extrabold text-sm text-slate-800">سجل طلاب المجموعة (${group.students.length} طالب)</h3>
+                        <span class="text-xs bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded-full">تحديث فوري</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs">
+                            <thead class="bg-slate-100 text-slate-700 font-extrabold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-4">اسم الطالب</th>
+                                    <th class="p-4">مشاهدة المحاضرة / الفيديو</th>
+                                    <th class="p-4">حالة الواجب والتسليم</th>
+                                    <th class="p-4">الدرجة المستحقة</th>
+                                    <th class="p-4 text-left">التصحيح والرصد</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                ${group.students.map(s => `
+                                    <tr class="hover:bg-slate-50/80 transition-all">
+                                        <td class="p-4">
+                                            <div class="font-extrabold text-slate-800">${s.name}</div>
+                                            <span class="text-[10px] text-slate-400">نشاط: ${s.lastActive}</span>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${s.watchedVideo ? 'bg-emerald-100 text-emerald-800':'bg-red-100 text-red-700'}">
+                                                <i class="fa-solid ${s.watchedVideo ? 'fa-check-circle':'fa-circle-xmark'} ml-1"></i>
+                                                ${s.watchedVideo ? 'شاهد المحاضرة' : 'لم يشاهد'}
+                                            </span>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${s.submittedAssignment ? 'bg-blue-100 text-blue-800':'bg-amber-100 text-amber-800'}">
+                                                ${s.submittedAssignment ? 'تم حل الواجب' : 'لم يحل بعد'}
+                                            </span>
+                                        </td>
+                                        <td class="p-4 font-black text-slate-800">
+                                            ${s.grade}
+                                        </td>
+                                        <td class="p-4 text-left">
+                                            <button onclick="openGradeModal('${s.name}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-sm transition-all">
+                                                مراجعة وتصحيح
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 3. ADMIN & SUPER ADMIN PERMISSIONS
+        // ==========================================
+        function renderAdminSubscriptions(container, title, subtitle, isSuperAdmin = false) {
+            title.innerText = isSuperAdmin ? 'إدارة الطلاب والصلاحيات (صلاحيات الأدمن كاملة)' : 'إدارة اشتراكات وصلاحيات الطلاب (Access Management)';
+            subtitle.innerText = 'التحكم في إضافة الطلاب وتفعيل إمكانية رؤية المواد (Available) أو حذفهم';
+
+            container.innerHTML = `
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden space-y-4 p-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-3 border-b border-slate-100 pb-3">
+                        <h3 class="font-extrabold text-sm text-slate-800">قائمة الطلاب واشتراكات المواد</h3>
+                        <button onclick="openAddStudentModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs font-bold shadow-md flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-plus"></i> إضافة طالب لمادة جديدة
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs">
+                            <thead class="bg-slate-100 text-slate-700 font-extrabold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3.5">اسم الطالب</th>
+                                    <th class="p-3.5">المرحلة الدراسية</th>
+                                    <th class="p-3.5">المواد المفعّلة</th>
+                                    <th class="p-3.5">حالة الوصول (Access)</th>
+                                    <th class="p-3.5 text-left">الإجراءات والصلاحيات</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                ${systemData.students.map(s => `
+                                    <tr>
+                                        <td class="p-3.5 font-extrabold text-slate-800">${s.name}</td>
+                                        <td class="p-3.5 text-slate-500 font-semibold">${s.grade}</td>
+                                        <td class="p-3.5">
+                                            <span class="px-2.5 py-0.5 bg-blue-50 text-blue-700 rounded-full font-bold border border-blue-100">${s.enrolledCourses.join(', ')}</span>
+                                        </td>
+                                        <td class="p-3.5">
+                                            <span class="px-2.5 py-0.5 ${s.status.includes('Available')?'bg-emerald-100 text-emerald-800':'bg-amber-100 text-amber-800'} rounded-full font-bold">
+                                                ${s.status}
+                                            </span>
+                                        </td>
+                                        <td class="p-3.5 text-left space-x-2 space-x-reverse">
+                                            <button onclick="toggleAccess(${s.id})" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-[11px] shadow-sm">تعديل Access</button>
+                                            <button onclick="removeStudent(${s.id})" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-[11px] shadow-sm">إزالة الطالب</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminTeachersView(container, title, subtitle) {
+            title.innerText = 'قائمة المعلمين والمواد المسندة';
+            subtitle.innerText = 'متابعة المعلمين المسجلين بالمنصة وعدد الطلاب والمجموعات لكل معلم';
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    ${systemData.teachers.map(t => `
+                        <div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-sm space-y-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-slate-800 text-sm">${t.name}</h3>
+                                    <p class="text-xs text-slate-500 font-semibold">${t.subject}</p>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-600 font-semibold">
+                                <div class="flex justify-between"><span>إجمالي الطلاب:</span> <strong class="text-slate-800">${t.totalStudents} طالب</strong></div>
+                                <div class="flex justify-between"><span>عدد المجموعات:</span> <strong class="text-slate-800">${t.groupsCount} مجموعات</strong></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 4. SUPER ADMIN DASHBOARD
+        // ==========================================
+        function renderSuperAdminOverview(container, title, subtitle) {
+            title.innerText = 'لوحة السوبر أدمن (Super Admin Dashboard)';
+            subtitle.innerText = 'إحصائيات عامة مبسطة ومباشرة للمنصة بدون تعقيدات حسابية';
+
+            container.innerHTML = `
+                <!-- System Quick KPIs -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+                        <span class="text-xs text-slate-500 font-extrabold">إجمالي الطلاب</span>
+                        <h3 class="text-3xl font-black text-blue-600 mt-1">628</h3>
+                        <span class="text-[10px] text-emerald-600 font-bold">طالب نشط بالمنصة</span>
+                    </div>
+                    <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+                        <span class="text-xs text-slate-500 font-extrabold">إجمالي المدرسين</span>
+                        <h3 class="text-3xl font-black text-purple-600 mt-1">14</h3>
+                        <span class="text-[10px] text-slate-400 font-bold">عبر 6 مواد دراسية</span>
+                    </div>
+                    <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+                        <span class="text-xs text-slate-500 font-extrabold">فريق الأدمنز</span>
+                        <h3 class="text-3xl font-black text-emerald-600 mt-1">3</h3>
+                        <span class="text-[10px] text-slate-400 font-bold">إدارة الاشتراكات</span>
+                    </div>
+                    <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
+                        <span class="text-xs text-slate-500 font-extrabold">المواد المتاحة</span>
+                        <h3 class="text-3xl font-black text-amber-600 mt-1">8</h3>
+                        <span class="text-[10px] text-slate-400 font-bold">إعدادي وثانوي</span>
+                    </div>
+                </div>
+
+                <!-- Teacher - Student Breakdown -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                    <h3 class="font-extrabold text-sm text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-users text-blue-600"></i> توزيع أعداد الطلاب لكل مدرس
+                    </h3>
+                    <div class="space-y-4">
+                        ${systemData.teachers.map(t => `
+                            <div>
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1 rounded-lg">
+                                    <span>${t.name} (${t.subject})</span>
+                                    <span>${t.totalStudents} طالب</span>
+                                </div>
+                                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-600 rounded-full" style="width: ${(t.totalStudents/350)*100}%"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSuperAdminAdminsView(container, title, subtitle) {
+            title.innerText = 'إدارة فريق الأدمنز وتكليفاتهم';
+            subtitle.innerText = 'استعراض الأدمنز ومهمات تفعيل الصلاحيات والوصول';
+
+            container.innerHTML = `
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <h3 class="font-extrabold text-sm text-slate-800">الأدمنز النشطون بالنظام</h3>
+                        <button onclick="alert('إضافة أدمن جديد')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs font-bold shadow-md">+ إضافة أدمن جديد</button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-xs">عك</div>
+                                <div>
+                                    <h4 class="font-extrabold text-xs text-slate-800">مهندس علي الكردي</h4>
+                                    <p class="text-[11px] text-slate-500 font-semibold">مكلف بتفعيل اشتراكات طلاب المرحلة الإعدادية</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">أدمن نشط</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // MODAL INTERACTION HANDLERS
+        // ==========================================
+        function showVideoModal(videoTitle) {
+            openModal(`مشاهدة الفيديو: ${videoTitle}`, `
+                <div class="space-y-4">
+                    <div class="w-full aspect-video bg-slate-900 rounded-2xl flex flex-col items-center justify-center text-white p-6 text-center shadow-lg">
+                        <i class="fa-solid fa-circle-play text-6xl text-blue-500 mb-3 animate-pulse"></i>
+                        <p class="font-extrabold text-sm">مشغل الفيديو التعليمي الخاص بالمنصة</p>
+                        <p class="text-xs text-slate-400 mt-1">يتم عرض المحاضرة بدقة عالية وبدون أي تقطيع</p>
+                    </div>
+                </div>
+            `);
+        }
+
+        function openAssignmentModal(title) {
+            openModal(`رفع وإرسال الحل: ${title}`, `
+                <form onsubmit="event.preventDefault(); closeModal(); alert('تم رفع الحل بنجاح وسيتم إشعارات المعلم فوزاً.');" class="space-y-4">
+                    <p class="text-xs text-slate-600 font-semibold">قم بإرفاق ملف الإجابة أو كتابة حل التكليف ميزة ليقوم المعلم بتصحيحها.</p>
+                    <textarea class="w-full p-3 border border-slate-200 rounded-2xl text-xs focus:ring-2 focus:ring-blue-500 outline-none" rows="4" placeholder="اكتب ملاحظاتك أو إجابتك هنا..."></textarea>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">إرفاق ملف الواجب (PDF / صورة):</label>
+                        <input type="file" class="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl text-xs shadow-md transition-all">تسليم الواجب الآن</button>
+                </form>
+            `);
+        }
+
+        function openUploadContentModal(courseName = '') {
+            openModal(`رفع محتوى مادة تعليمية جديدة`, `
+                <form onsubmit="event.preventDefault(); closeModal(); alert('تم رفع المحتوى بنجاح وإرسال إشعار فوري لجميع الطلاب المسجلين بالدورة!');" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">عنوان المحاضرة / الدرس</label>
+                        <input type="text" required class="w-full p-3 border border-slate-200 rounded-2xl text-xs" placeholder="مثال: المحاضرة 3 - حل المعادلات">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">نوع المحتوى المرفوع</label>
+                        <select class="w-full p-3 border border-slate-200 rounded-2xl text-xs font-semibold">
+                            <option>فيديو شرح</option>
+                            <option>ملف PDF / مذكرة</option>
+                            <option>واجب / اختبار قصير</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl text-xs shadow-md transition-all">نشر المحتوى وإشعار الطلاب</button>
+                </form>
+            `);
+        }
+
+        function openGradeModal(studentName) {
+            openModal(`تصحيح واجب ورصد درجة الطالب: ${studentName}`, `
+                <form onsubmit="event.preventDefault(); closeModal(); alert('تم رصد الدرجة وإرسال إشعار فوري للطالب.');" class="space-y-4">
+                    <div class="p-3.5 bg-slate-50 rounded-2xl text-xs border border-slate-100">
+                        <strong class="text-slate-800">ملف الإجابة المرفوع من الطالب:</strong>
+                        <div class="mt-2 text-blue-600 font-bold cursor-pointer hover:underline"><i class="fa-solid fa-file-pdf ml-1"></i> solution_${studentName}.pdf</div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">الدرجة المستحقة (من 20)</label>
+                        <input type="number" min="0" max="20" required value="18" class="w-full p-3 border border-slate-200 rounded-2xl text-xs font-extrabold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ملاحظات المعلم للطالب</label>
+                        <input type="text" class="w-full p-3 border border-slate-200 rounded-2xl text-xs" placeholder="ممتاز، أحسنت الإجابة في السؤال الثاني.">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl text-xs shadow-md transition-all">حفظ ورصد الدرجة</button>
+                </form>
+            `);
+        }
+
+        function openAddStudentModal() {
+            openModal('إضافة طالب وتفعيل وصول مادة (Make Available)', `
+                <form onsubmit="event.preventDefault(); closeModal(); alert('تم تفعيل وصول المادة للطالب بنجاح!');" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">اسم الطالب</label>
+                        <select class="w-full p-3 border border-slate-200 rounded-2xl text-xs font-semibold">
+                            ${systemData.students.map(s => `<option>${s.name} (${s.grade})</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">المادة المراد تفعيل الوصول إليها</label>
+                        <select class="w-full p-3 border border-slate-200 rounded-2xl text-xs font-semibold">
+                            ${systemData.courses.map(c => `<option>${c.title}</option>`).join('')}
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl text-xs shadow-md transition-all">تفعيل الوصول المباشر (Make Available)</button>
+                </form>
+            `);
+        }
+
+        function toggleAccess(studentId) {
+            alert('تم تغيير حالة وصول (Access) المادة لهذا الطالب بنجاح.');
+        }
+
+        function removeStudent(studentId) {
+            if(confirm('هل أنت تأكد من إزالة هذا الطالب من المادة؟')) {
+                alert('تم إزالة الطالب من المادة بنجاح.');
+            }
+        }
+
+        function openModal(title, contentHtml) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerHTML = contentHtml;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
